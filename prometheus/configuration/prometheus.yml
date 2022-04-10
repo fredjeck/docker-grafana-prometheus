@@ -1,0 +1,27 @@
+global:
+  scrape_interval:     15s # By default, scrape targets every 15 seconds.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds.
+
+  # Attach these extra labels to all timeseries collected by this Prometheus instance.
+  external_labels:
+    monitor: 'docker-localhost'
+
+rule_files:
+  - 'prometheus.rules.yml'
+
+scrape_configs:
+  # Prometheus self-metrics
+  - job_name: 'prometheus'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['localhost:9090']
+  # Docker host metrics   
+  - job_name: 'nodeexporter'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['nodeexporter:9100']
+  # Add below your hown containers or local processes to scrame
+  - job_name: 'dotnet'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['host.docker.internal:5016']
